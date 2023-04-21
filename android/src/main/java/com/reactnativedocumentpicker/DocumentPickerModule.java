@@ -14,6 +14,7 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -38,6 +39,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Date;
+
+import android.provider.MediaStore;
+
+
 
 @ReactModule(name = DocumentPickerModule.NAME)
 public class DocumentPickerModule extends ReactContextBaseJavaModule {
@@ -63,6 +69,9 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
   private static final String FIELD_NAME = "name";
   private static final String FIELD_TYPE = "type";
   private static final String FIELD_SIZE = "size";
+  private static final String FIELD_CREATION = "creationTime";
+
+  private static String temp = "";
 
   private final ActivityEventListener activityEventListener = new BaseActivityEventListener() {
     @Override
@@ -260,6 +269,14 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
       ContentResolver contentResolver = context.getContentResolver();
       WritableMap map = Arguments.createMap();
       map.putString(FIELD_URI, uri.toString());
+
+      if(uri.toString().contains("content")) {
+        temp = getCreationTime(context, uri);
+        map.putString(FIELD_CREATION, temp );
+      } else {
+        map.putNull(FIELD_CREATION);
+      }
+
       map.putString(FIELD_TYPE, contentResolver.getType(uri));
       try (Cursor cursor = contentResolver.query(uri, null, null, null, null, null)) {
         if (cursor != null && cursor.moveToFirst()) {
@@ -285,6 +302,24 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
 
       prepareFileUri(context, map, uri);
       return map;
+    }
+
+
+    private static String getCreationTime(Context context, Uri uri) {
+      DocumentFile document =  DocumentFile.fromSingleUri(context, uri);
+      System.out.println("__Value is = document file "+document.lastModified());
+//      String[] projection = {MediaStore.Video.Media.DATE_MODIFIED};
+//      ContentResolver contentResolver = context.getContentResolver();
+//      Cursor cursor = contentResolver.query(uri, projection, null, null, null);
+//      if (cursor != null && cursor.moveToFirst()) {
+//        long creationTime = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED));
+//        System.out.println("__Value is = "+cursor);
+//
+//        cursor.close();
+//        // use lastModified timestamp
+//        return "";
+//      }
+      return Long.toString(document.lastModified());
     }
 
     private void prepareFileUri(Context context, WritableMap map, Uri uri) {
