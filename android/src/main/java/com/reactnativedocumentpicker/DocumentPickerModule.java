@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -130,7 +131,7 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
     }
 
     try {
-      Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+      Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
       intent.addCategory(Intent.CATEGORY_OPENABLE);
 
       intent.setType("*/*");
@@ -174,6 +175,13 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
     } catch (Exception e) {
       sendError(E_FAILED_TO_SHOW_PICKER, "Failed to create directory picker", e);
     }
+  }
+
+
+  @ReactMethod
+  public void deleteFile(String fileUri) {
+    Uri fileContent = Uri.parse(fileUri);
+  DocumentFile.fromSingleUri(getReactApplicationContext().getApplicationContext(), fileContent).delete();
   }
 
   private void onPickDirectoryResult(int resultCode, Intent data) {
