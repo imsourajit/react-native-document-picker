@@ -48,6 +48,7 @@ import android.provider.MediaStore;
 
 @ReactModule(name = DocumentPickerModule.NAME)
 public class DocumentPickerModule extends ReactContextBaseJavaModule {
+
   public static final String NAME = "RNDocumentPicker";
   private static final int READ_REQUEST_CODE = 41;
   private static final int PICK_DIR_REQUEST_CODE = 42;
@@ -133,6 +134,10 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
     try {
       Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
       intent.addCategory(Intent.CATEGORY_OPENABLE);
+      intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
 
       intent.setType("*/*");
       if (!args.isNull(OPTION_TYPE)) {
@@ -182,6 +187,31 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
   public void deleteFile(String fileUri) {
     Uri fileContent = Uri.parse(fileUri);
   DocumentFile.fromSingleUri(getReactApplicationContext().getApplicationContext(), fileContent).delete();
+  }
+
+  @ReactMethod
+  public void deleteCache() {
+    try {
+      File dir = getReactApplicationContext().getApplicationContext().getCacheDir();
+      deleteDir(dir);
+    } catch (Exception e) { e.printStackTrace();}
+  }
+
+  public static boolean deleteDir(File dir) {
+    if (dir != null && dir.isDirectory()) {
+      String[] children = dir.list();
+      for (int i = 0; i < children.length; i++) {
+        boolean success = deleteDir(new File(dir, children[i]));
+        if (!success) {
+          return false;
+        }
+      }
+      return dir.delete();
+    } else if(dir!= null && dir.isFile()) {
+      return dir.delete();
+    } else {
+      return false;
+    }
   }
 
   private void onPickDirectoryResult(int resultCode, Intent data) {

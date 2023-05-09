@@ -1,5 +1,5 @@
 {
-  "name": "react-native-document-picker",
+  "name": "@imsourajit/react-native-document-picker",
   "version": "8.2.0",
   "description": "A react native interface to access documents from dropbox, google drive, iCloud...",
   "main": "lib/commonjs/index",
@@ -44,13 +44,13 @@
     "google-drive",
     "icloud"
   ],
-  "repository": "https://github.com/rnmods/react-native-document-picker",
-  "author": "Elyx0 <elyx00@gmail.com> (https://github.com/rnmods), Vojtech Novak (hello@react-native-training.eu)",
+  "repository": "https://github.com/imsourajit/react-native-document-picker",
+  "author": "Sourajit <sourajitkarada@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rnmods/react-native-document-picker/issues"
+    "url": "https://github.com/imsourajit/react-native-document-picker/issues"
   },
-  "homepage": "https://github.com/rnmods/react-native-document-picker#readme",
+  "homepage": "https://github.com/imsourajit/react-native-document-picker#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
